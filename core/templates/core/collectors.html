@@ -1,0 +1,59 @@
+{% extends "core/base.html" %}
+
+{% block title %}Collectors{% endblock %}
+
+{% block content %}
+<h2>Collectors</h2>
+
+<table border="1" cellspacing="0" cellpadding="4">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Domain</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Enabled</th>
+            <th>Started at</th>
+            <th>Finished at</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for collector in collectors %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ collector.domain.name }}</td>
+            <td>{{ collector.get_type_display }}</td>
+            <td>{{ collector.get_status_display }}</td>
+            <td>
+                {% if collector.enabled %}
+                    yes
+                {% else %}
+                    no
+                {% endif %}
+            </td>
+            <td>{{ collector.started_at|default:"-" }}</td>
+            <td>{{ collector.finished_at|default:"-" }}</td>
+            <td>
+                <form method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="collector_id" value="{{ collector.id }}">
+
+                    <button type="submit" name="action" value="toggle_enabled">
+                        {% if collector.enabled %}Disable{% else %}Enable{% endif %}
+                    </button>
+
+                    <button type="submit" name="action" value="start">Start</button>
+                    <button type="submit" name="action" value="stop">Stop</button>
+                </form>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="8">No collectors yet.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "core/base.html" %}
+
+{% block title %}All Contacts{% endblock %}
+
+{% block content %}
+<h2>All Contacts</h2>
+
+<table border="1" cellspacing="0" cellpadding="4">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Domain</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Collector</th>
+            <th>Created at</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for contact in contacts %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ contact.domain.name }}</td>
+            <td>{{ contact.email|default:"-" }}</td>
+            <td>{{ contact.phone|default:"-" }}</td>
+            <td>
+                {% if contact.source_collector %}
+                    {{ contact.source_collector.get_type_display }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td>{{ contact.created_at }}</td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="6">No contacts yet.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
